@@ -1,0 +1,35 @@
+models: [
+    "meta-llama/Llama-3.2-1B-Instruct",
+    "meta-llama/Llama-3.2-3B-Instruct",
+    "meta-llama/Llama-3.1-8B-Instruct",
+    # "meta-llama/Llama-3.1-70B-Instruct",
+  ]
+
+num_calibration_samples: 512
+max_sequence_length: 8192
+
+quant_methods:
+  GPTQModifier:
+    iteration_parameters:
+      keys: [
+        "scheme"
+      ]
+      values_per_keys: [
+        [
+        # 8 float weights and activation
+        # "FP8_DYNAMIC",
+        # 8 float weights and activation
+        # "FP8",
+        # 4 int weights and 8 int activation
+        # "W4A8",
+        # 8 int weights
+        "W8A16",
+        # 8 int weights and activation (or INT8)
+        # "W8A8",
+        # 4 int weights
+        "W4A16"
+        ],
+      ]
+    static_parameters:
+      ignore: ["lm_head"]
+      targets: "Linear"
