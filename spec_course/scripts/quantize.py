@@ -1,11 +1,9 @@
 import argparse
 import gc
-import logging
 from pathlib import Path
 from typing import Any, Dict
 
 import torch
-import yaml
 from datasets import load_dataset
 from llmcompressor.modifiers.quantization import GPTQModifier
 from llmcompressor.transformers import oneshot

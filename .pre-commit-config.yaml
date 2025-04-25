@@ -25,3 +25,10 @@ repos:
     hooks:
     -   id: prettier
         types_or: [javascript, jsx, ts, tsx, json]
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.11.7
+  hooks:
+  - id: ruff-format
+  - id: ruff
+    args: [--fix]

@@ -3,8 +3,6 @@ import subprocess
 from pathlib import Path
 from typing import Any, Dict
 
-import numpy as np
-
 
 def run_k6_test(args: Dict[Any, Any]) -> None:
     """Run k6 test with provided arguments"""
