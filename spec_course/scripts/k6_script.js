@@ -1,7 +1,6 @@
 import http from "k6/http";
 import { check } from "k6";
 import { Rate, Trend } from "k6/metrics";
-import { normal } from "k6/data";
 
 const endToEndLatency = new Trend("end_to_end_latency");
 const failRate = new Rate("failed_requests");
@@ -34,15 +33,33 @@ function generatePrompt(length) {
   return text.repeat(Math.ceil(length / text.length)).slice(0, length);
 }
 
+function boxMullerTransform() {
+  const u1 = Math.random();
+  const u2 = Math.random();
+
+  const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
+  const z1 = Math.sqrt(-2.0 * Math.log(u1)) * Math.sin(2.0 * Math.PI * u2);
+
+  return { z0, z1 };
+}
+
+function getNormallyDistributedRandomNumber(mean, stddev) {
+  const { z0, _ } = boxMullerTransform();
+
+  return z0 * stddev + mean;
+}
+
 export default function () {
-  const maxTokens = Math.max(
-    1,
-    Math.round(normal(params.maxTokensMean, params.maxTokensStdDev)),
+  const normDistTokens = getNormallyDistributedRandomNumber(
+    params.maxTokensMean,
+    params.maxTokensStdDev,
   );
-  const promptLen = Math.max(
-    10,
-    Math.round(normal(params.promptLenMean, params.promptLenStdDev)),
+  const normDistPrompts = getNormallyDistributedRandomNumber(
+    params.promptLenMean,
+    params.promptLenStdDev,
   );
+  const maxTokens = Math.max(1, Math.round(normDistTokens));
+  const promptLen = Math.max(10, Math.round(normDistPrompts));
 
   const payload = {
     model: params.modelName,
@@ -68,7 +85,7 @@ export default function () {
   });
 
   const endTime = new Date().getTime();
-  const latency = endTime - startTime;
+  const latency = (endTime - startTime) / 1000;
 
   endToEndLatency.add(latency);
 

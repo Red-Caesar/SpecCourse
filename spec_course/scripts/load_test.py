@@ -1,8 +1,9 @@
 import argparse
-import json
 import subprocess
 from pathlib import Path
 from typing import Any, Dict
+
+import numpy as np
 
 
 def run_k6_test(args: Dict[Any, Any]) -> None:
@@ -32,10 +33,10 @@ def run_k6_test(args: Dict[Any, Any]) -> None:
         "RPS": args.rps,
         "MODEL_NAME": args.model_name,
         "ENDPOINT_URL": args.endpoint_url,
-        "MAX_TOKENS_MEAN": max_tokens_mean,
-        "MAX_TOKENS_STD": max_tokens_std,
-        "PROMPT_LEN_MEAN": prompt_len_mean,
-        "PROMPT_LEN_STD": prompt_len_std,
+        "MAX_TOKENS_MEAN": str(max_tokens_mean),
+        "MAX_TOKENS_STD": str(max_tokens_std),
+        "PROMPT_LEN_MEAN": str(prompt_len_mean),
+        "PROMPT_LEN_STD": str(prompt_len_std),
         "DURATION": args.duration,
     }
 
@@ -45,8 +46,8 @@ def run_k6_test(args: Dict[Any, Any]) -> None:
             env={**dict(env), **dict(subprocess.os.environ)},
             check=True,
         )
-    finally:
-        k6_script_path.unlink(missing_ok=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error running k6 test: {e}")
 
 
 def main():
