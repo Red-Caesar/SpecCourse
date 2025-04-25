@@ -46,8 +46,10 @@ def install_nvm_and_node():
                 check=True,
             )
 
-            nvm_cmd = f". {home}/.nvm/nvm.sh && nvm install 20"
-            subprocess.run(nvm_cmd, shell=True, check=True)
+            subprocess.run(
+                ["bash", "-c", ". ~/.nvm/nvm.sh && nvm install 20 && nvm use 20"],
+                check=True,
+            )
             print("nvm and Node.js installed successfully")
         except subprocess.CalledProcessError as e:
             print(f"Error installing nvm: {e}")
@@ -73,7 +75,7 @@ def install_k6():
             [
                 "bash",
                 "-c",
-                f"curl -L https://github.com/grafana/k6/releases/download/{k6_version}/k6-{k6_version}-linux-amd64.tar.gz | tar xz && mv k6-{k6_version}-linux-amd64/k6 {bin_dir}/k6",
+                f"curl -L https://github.com/grafana/k6/releases/download/{k6_version}/k6-{k6_version}-linux-amd64.tar.gz | tar xz && mv k6-{k6_version}-linux-amd64/k6 {bin_dir}/k6 && rm -rf k6-{k6_version}-linux-amd64",
             ],
             check=True,
         )
@@ -88,7 +90,11 @@ def install_k6():
 
 
 class PostInstallCommand(Command):
-    """Post-installation commands"""
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
 
     def run(self):
         install_nvm_and_node()
