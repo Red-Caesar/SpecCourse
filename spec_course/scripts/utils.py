@@ -1,12 +1,19 @@
 import logging
 from pathlib import Path
+from typing import Union
 
 import yaml
 
 LOG_PATH = Path(".logs")
 
 
-def setup_logger(output_dir: str = LOG_PATH, log_name: str = "test") -> logging.Logger:
+def setup_logger(
+    output_dir: Union[str, Path] = LOG_PATH, log_name: str = "test"
+) -> logging.Logger:
+    if isinstance(output_dir, str):
+        output_dir = Path(output_dir)
+
+    output_dir.mkdir(parents=True, exist_ok=True)
     log_file = Path(output_dir) / f"{log_name}.log"
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 

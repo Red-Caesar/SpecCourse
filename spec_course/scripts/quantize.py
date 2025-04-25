@@ -47,7 +47,6 @@ def quantize_model(
 ):
     logger.info(f"Processing model: {model_name}")
     iteration_parameters = quant_args.get("iteration_parameters")
-    print("HERE", iteration_parameters)
     for key in iteration_parameters["keys"]:
         for values in iteration_parameters["values_per_keys"]:
             for value in values:

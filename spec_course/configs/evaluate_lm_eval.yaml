@@ -1,14 +1,20 @@
 models: [
     "meta-llama/Llama-3.2-1B-Instruct",
     "models/Llama-3.2-1B-Instruct-scheme-W8A16",
+    "models/Llama-3.2-1B-Instruct-scheme-W4A16",
+    "meta-llama/Llama-3.2-3B-Instruct",
+    "models/Llama-3.2-3B-Instruct-scheme-W8A16",
+    "models/Llama-3.2-3B-Instruct-scheme-W4A16",
+    "meta-llama/Llama-3.1-8B-Instruct",
+    "models/Llama-3.1-8B-Instruct-scheme-W8A16",
+    "models/Llama-3.1-8B-Instruct-scheme-W4A16",
   ]
 
 lm_eval_args:
   tasks: "gsm8k"
   batch_size: "128"
-  base_url: "http://localhost:8000/v1/chat/completions"
   apply_chat_template: ""
   fewshot_as_multiturn: ""
   log_samples: ""
-  output_path: "results/gsm8k"
-  num_fewshots: "0"
+  output_path: "./results/gsm8k"
+  num_fewshot: "0"
