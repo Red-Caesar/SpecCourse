@@ -12,6 +12,8 @@ dependencies = [
     "pyyaml",
     "requests",
     "pre-commit",
+    "ipykernel",
+    "seaborn",
 ]
 description = "Experiments with speculative decoding"
 requires-python = ">=3.11"
