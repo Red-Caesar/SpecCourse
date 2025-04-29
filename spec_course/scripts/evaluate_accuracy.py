@@ -8,7 +8,7 @@ from utils import LOG_PATH, load_config, setup_logger
 
 def create_lm_eval_command(model_path: str, lm_eval_args: dict) -> str:
     """Create lm-eval-harness command with arguments"""
-    args_str = " ".join([f"--{k} {v}" for k, v in lm_eval_args.items() if v])
+    args_str = " ".join([f"--{k} {v}" for k, v in lm_eval_args.items()])
     return f"lm-eval --model vllm --model_args pretrained={model_path} {args_str}"
 
 
@@ -49,7 +49,7 @@ def main():
     )
     args = parser.parse_args()
     config = load_config(args.config)
-    logger = setup_logger(LOG_PATH, "quantization")
+    logger = setup_logger(LOG_PATH, "accuracy_evaluation")
 
     models = config.get("models", [])
     lm_eval_args = config.get("lm_eval_args", {})

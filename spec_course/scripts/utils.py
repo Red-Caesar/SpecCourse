@@ -15,9 +15,10 @@ def setup_logger(
 
     output_dir.mkdir(parents=True, exist_ok=True)
     log_file = Path(output_dir) / f"{log_name}.log"
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-
-    file_handler = logging.FileHandler(log_file)
+    formatter = logging.Formatter(
+        "%(asctime)s - %(levelname)s - %(pathname)s:%(lineno)d - %(message)s"
+    )
+    file_handler = logging.FileHandler(log_file, mode="w")
     file_handler.setFormatter(formatter)
 
     console_handler = logging.StreamHandler()
