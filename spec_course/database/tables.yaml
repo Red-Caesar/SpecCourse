@@ -1,0 +1,51 @@
+# order is important for creation
+database_tables:
+  models:
+    columns:
+      model_id: "INTEGER PRIMARY KEY AUTOINCREMENT"
+      model_name: "STRING"
+
+  quantizations:
+    columns:
+      quantization_id: "INTEGER PRIMARY KEY AUTOINCREMENT"
+      quantization_type: "STRING"
+
+  sd_setups:
+    columns:
+      sd_setup_id: "INTEGER PRIMARY KEY AUTOINCREMENT"
+      target_model_id: "INTEGER"
+      target_quantization_id: "INTEGER"
+      draft_model_id: "INTEGER"
+      draft_quantization_id: "INTEGER"
+    dependent_columns:
+      target_model_id: "models(model_id)"
+      target_quantization_id: "quantizations(quantization_id)"
+      draft_model_id: "models(model_id)"
+      draft_quantization_id: "quantizations(quantization_id)"
+
+  accuracy:
+    columns:
+      date: "DATETIME DEFAULT CURRENT_TIMESTAMP"
+      gsm8k_score: "FLOAT"
+      model_id: "INTEGER"
+      quantization_id: "INTEGER"
+    dependent_columns:
+      model_id: "models(model_id)"
+      quantization_id: "quantizations(quantization_id)"
+
+  ld_performances:
+    columns:
+      date: "DATETIME DEFAULT CURRENT_TIMESTAMP"
+      rps: "INTEGER"
+      end_to_end_latencty: "FLOAT"
+      sd_setup_id: "INTEGER"
+    dependent_columns:
+      sd_setup_id: "sd_setups(sd_setup_id)"
+
+  sd_performances:
+    columns:
+      date: "DATETIME DEFAULT CURRENT_TIMESTAMP"
+      acceptance_rate: "FLOAT"
+      sd_setup_id: "INTEGER"
+    dependent_columns:
+      sd_setup_id: "sd_setups(sd_setup_id)"
