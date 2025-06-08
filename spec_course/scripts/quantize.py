@@ -1,11 +1,14 @@
 import argparse
 import gc
+import traceback
 from pathlib import Path
 from typing import Any, Dict
 
 import torch
 from datasets import load_dataset
+from llmcompressor.modifiers.obcq import SparseGPTModifier
 from llmcompressor.modifiers.quantization import GPTQModifier
+from llmcompressor.modifiers.smoothquant import SmoothQuantModifier
 from llmcompressor.transformers import oneshot
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from utils import LOG_PATH, load_config, setup_logger
@@ -29,8 +32,10 @@ def load_calibration_dataset(
     return ds
 
 
-function_map = {
+str2QuantModifier = {
     "GPTQModifier": GPTQModifier,
+    "SmoothQuantModifier": SmoothQuantModifier,
+    "SparseGPTModifier": SparseGPTModifier,
 }
 
 
@@ -38,62 +43,63 @@ def quantize_model(
     model_name,
     output_dir,
     logger,
-    quant_method: str,
-    quant_args: Dict[str, Any],
+    quant_method: Dict[str, Any],
     num_calibration_samples: int = 512,
     max_sequence_length: int = 8192,
 ):
     logger.info(f"Processing model: {model_name}")
-    iteration_parameters = quant_args.get("iteration_parameters")
-    for key in iteration_parameters["keys"]:
-        for values in iteration_parameters["values_per_keys"]:
-            for value in values:
-                model_output_dir = (
-                    Path(output_dir) / f"{model_name.split('/')[-1]}-{key}-{value}"
-                )
-                model_output_dir.mkdir(parents=True, exist_ok=True)
-                try:
-                    logger.info("Loading model and tokenizer...")
-                    model = AutoModelForCausalLM.from_pretrained(
-                        model_name, torch_dtype="auto", device_map="auto"
-                    )
-                    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model_output_dir = (
+        Path(output_dir) / f"{model_name.split('/')[-1]}-{quant_method['model_suffix']}"
+    )
+    model_output_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        logger.info("Loading model and tokenizer...")
+        model = AutoModelForCausalLM.from_pretrained(
+            model_name, torch_dtype="auto", device_map="auto"
+        )
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
 
-                    logger.info("Preparing calibration dataset...")
-                    ds = load_calibration_dataset(tokenizer, num_calibration_samples)
+        logger.info("Preparing calibration dataset...")
+        calibration_dataset = load_calibration_dataset(
+            tokenizer, num_calibration_samples
+        )
 
-                    logger.info("Preparing quantization recipe...")
-                    static_parameters = quant_args.get("static_parameters", {})
-                    recipe = function_map[quant_method](
-                        **{**static_parameters, **{key: value}}
-                    )
+        logger.info("Preparing quantization recipe...")
+        recipe = []
+        for method in quant_method["recipe"]:
+            method_name, method_args = list(method.items())[0]
+            recipe.append(str2QuantModifier[method_name](**method_args))
 
-                    logger.info("Starting quantization...")
-                    oneshot(
-                        model=model,
-                        output_dir=str(model_output_dir),
-                        dataset=ds,
-                        recipe=recipe,
-                        max_seq_length=max_sequence_length,
-                        num_calibration_samples=num_calibration_samples,
-                        save_compressed=True,
-                    )
-                    model.save_pretrained(str(model_output_dir), save_compressed=True)
-                    tokenizer.save_pretrained(str(model_output_dir))
-                    logger.info(f"Model quantized and saved to: {model_output_dir}")
-                except Exception as e:
-                    logger.error(
-                        f"Error processing model {model_name} with {key} {value}: {e}"
-                    )
-                    if "model" in locals():
-                        del model
-                    if "tokenizer" in locals():
-                        del tokenizer
-                    if "ds" in locals():
-                        del ds
+        logger.info("Starting quantization...")
+        oneshot(
+            model=model,
+            output_dir=str(model_output_dir),
+            dataset=calibration_dataset,
+            recipe=recipe,
+            max_seq_length=max_sequence_length,
+            num_calibration_samples=num_calibration_samples,
+            save_compressed=True,
+            oneshot_device="auto",
+        )
+        model.save_pretrained(str(model_output_dir), save_compressed=True)
+        tokenizer.save_pretrained(str(model_output_dir))
+        logger.info(f"Model quantized and saved to: {model_output_dir}")
+    except Exception as e:
+        error_msg = (
+            f"Error processing model {model_name} with method {quant_method['setup_name']}:\n"
+            f"{str(e)}\n"
+            f"Traceback:\n{traceback.format_exc()}"
+        )
+        logger.error(error_msg)
+        if "model" in locals():
+            del model
+        if "tokenizer" in locals():
+            del tokenizer
+        if "calibration_dataset" in locals():
+            del calibration_dataset
 
-                    torch.cuda.empty_cache()
-                    gc.collect()
+        torch.cuda.empty_cache()
+        gc.collect()
 
 
 def main():
@@ -137,22 +143,15 @@ def main():
         raise ValueError("The quantization schema is not specified")
 
     for model_name in models:
-        for quant_method, quant_args in quant_methods.items():
-            try:
-                quantize_model(
-                    model_name=model_name,
-                    output_dir=args.output_dir,
-                    logger=logger,
-                    quant_method=quant_method,
-                    quant_args=quant_args,
-                    num_calibration_samples=num_samples,
-                    max_sequence_length=max_seq_length,
-                )
-            except Exception as e:
-                logger.error(
-                    f"Error processing model {model_name} with method {quant_method}: {e}"
-                )
-                continue
+        for quant_method in quant_methods:
+            quantize_model(
+                model_name=model_name,
+                output_dir=args.output_dir,
+                logger=logger,
+                quant_method=quant_method,
+                num_calibration_samples=num_samples,
+                max_sequence_length=max_seq_length,
+            )
 
 
 if __name__ == "__main__":
