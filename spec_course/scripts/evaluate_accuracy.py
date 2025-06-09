@@ -5,6 +5,8 @@ from pathlib import Path
 
 from utils import LOG_PATH, load_config, setup_logger
 
+logger = setup_logger("accuracy_evaluation")
+
 
 def create_lm_eval_command(model_path: str, lm_eval_args: dict) -> str:
     """Create lm-eval-harness command with arguments"""
@@ -49,7 +51,6 @@ def main():
     )
     args = parser.parse_args()
     config = load_config(args.config)
-    logger = setup_logger(LOG_PATH, "accuracy_evaluation")
 
     models = config.get("models", [])
     lm_eval_args = config.get("lm_eval_args", {})

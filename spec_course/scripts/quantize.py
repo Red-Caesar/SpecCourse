@@ -11,9 +11,10 @@ from llmcompressor.modifiers.quantization import GPTQModifier
 from llmcompressor.modifiers.smoothquant import SmoothQuantModifier
 from llmcompressor.transformers import oneshot
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from utils import LOG_PATH, load_config, setup_logger
+from utils import load_config, setup_logger
 
 CALIBRATION_DATASET = "neuralmagic/LLM_compression_calibration"
+logger = setup_logger("quantization")
 
 
 def load_calibration_dataset(
@@ -42,14 +43,14 @@ str2QuantModifier = {
 def quantize_model(
     model_name,
     output_dir,
-    logger,
     quant_method: Dict[str, Any],
     num_calibration_samples: int = 512,
     max_sequence_length: int = 8192,
 ):
     logger.info(f"Processing model: {model_name}")
     model_output_dir = (
-        Path(output_dir) / f"{model_name.split('/')[-1]}-{quant_method['model_suffix']}"
+        Path(output_dir)
+        / f"{model_name.split('/')[-1]}-scheme-{quant_method['model_suffix']}"
     )
     model_output_dir.mkdir(parents=True, exist_ok=True)
     try:
@@ -81,8 +82,6 @@ def quantize_model(
             save_compressed=True,
             oneshot_device="auto",
         )
-        model.save_pretrained(str(model_output_dir), save_compressed=True)
-        tokenizer.save_pretrained(str(model_output_dir))
         logger.info(f"Model quantized and saved to: {model_output_dir}")
     except Exception as e:
         error_msg = (
@@ -123,7 +122,6 @@ def main():
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    logger = setup_logger(LOG_PATH, "quantization")
 
     if args.config:
         config = load_config(args.config)
@@ -147,7 +145,6 @@ def main():
             quantize_model(
                 model_name=model_name,
                 output_dir=args.output_dir,
-                logger=logger,
                 quant_method=quant_method,
                 num_calibration_samples=num_samples,
                 max_sequence_length=max_seq_length,

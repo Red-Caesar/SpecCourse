@@ -7,7 +7,7 @@ name = "spec_course"
 authors = [{name = "Barbara Suslova", email = "suslovavd2002@mail.ru"}]
 version = "0.1.0"
 dependencies = [
-    "llmcompressor",
+    "llmcompressor==0.5.1",
     "vllm==0.8.4",
     "pyyaml",
     "requests",

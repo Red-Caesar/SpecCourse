@@ -1,13 +1,20 @@
 models: [
     "meta-llama/Llama-3.2-1B-Instruct",
-    "models/Llama-3.2-1B-Instruct-scheme-W8A16",
-    "models/Llama-3.2-1B-Instruct-scheme-W4A16",
-    "meta-llama/Llama-3.2-3B-Instruct",
-    "models/Llama-3.2-3B-Instruct-scheme-W8A16",
-    "models/Llama-3.2-3B-Instruct-scheme-W4A16",
+    "models/Llama-3.2-1B-Instruct-scheme-FP8",
+    "models/Llama-3.2-1B-Instruct-scheme-INT8",
+    "models/Llama-3.2-1B-Instruct-scheme-INT4",
+    "models/Llama-3.2-1B-Instruct-scheme-sparse_05",
+    "models/Llama-3.2-1B-Instruct-scheme-sparse_05_FP8",
+    "models/Llama-3.2-1B-Instruct-scheme-sparse_05_INT8",
+    "models/Llama-3.2-1B-Instruct-scheme-sparse_05_INT4",
     "meta-llama/Llama-3.1-8B-Instruct",
-    "models/Llama-3.1-8B-Instruct-scheme-W8A16",
-    "models/Llama-3.1-8B-Instruct-scheme-W4A16",
+    "models/Llama-3.1-8B-Instruct-scheme-FP8",
+    "models/Llama-3.1-8B-Instruct-scheme-INT8",
+    "models/Llama-3.1-8B-Instruct-scheme-INT4",
+    "models/Llama-3.1-8B-Instruct-scheme-sparse_05",
+    # "models/Llama-3.1-8B-Instruct-scheme-sparse_05_FP8",
+    # "models/Llama-3.1-8B-Instruct-scheme-sparse_05_INT8",
+    # "models/Llama-3.1-8B-Instruct-scheme-sparse_05_INT4",
   ]
 
 lm_eval_args:
