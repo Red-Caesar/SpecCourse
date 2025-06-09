@@ -1,0 +1,185 @@
+single_setup:
+  server_args:
+    {
+      "model": "models/Llama-3.1-8B-Instruct-scheme-FP8",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "meta-llama/Llama-3.2-1B-Instruct",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+
+few_setups: [
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.1-8B-Instruct-scheme-FP8",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.1-8B-Instruct-scheme-INT8",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.1-8B-Instruct-scheme-INT4",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.1-8B-Instruct-scheme-sparse_05",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.1-8B-Instruct-scheme-sparse_05_FP8",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.1-8B-Instruct-scheme-sparse_05_INT8",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  # {"server_args":
+  #   {
+  #     "model": "meta-llama/Llama-3.1-8B-Instruct",
+  #     "tensor_parallel_size": 1,
+  #     "speculative_config": {
+  #       "model": "models/Llama-3.1-8B-Instruct-scheme-sparse_05_INT4",
+  #       "num_speculative_tokens": 4,
+  #       "draft_tensor_parallel_size": 1
+  #     }
+  #   }
+  # },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "meta-llama/Llama-3.2-1B-Instruct",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.2-1B-Instruct-scheme-FP8",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.2-1B-Instruct-scheme-INT8",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.2-1B-Instruct-scheme-INT4",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.2-1B-Instruct-scheme-sparse_05",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.2-1B-Instruct-scheme-sparse_05_FP8",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.2-1B-Instruct-scheme-sparse_05_INT8",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+  {"server_args":
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "tensor_parallel_size": 1,
+      "speculative_config": {
+        "model": "models/Llama-3.2-1B-Instruct-scheme-sparse_05_INT4",
+        "num_speculative_tokens": 4,
+        "draft_tensor_parallel_size": 1
+      }
+    }
+  },
+]
