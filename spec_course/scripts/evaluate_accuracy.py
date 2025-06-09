@@ -5,7 +5,7 @@ from pathlib import Path
 
 from utils import LOG_PATH, load_config, setup_logger
 
-logger = setup_logger("accuracy_evaluation")
+logger = setup_logger(log_name="accuracy_evaluation")
 
 
 def create_lm_eval_command(model_path: str, lm_eval_args: dict) -> str:

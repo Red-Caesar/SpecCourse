@@ -14,7 +14,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from utils import load_config, setup_logger
 
 CALIBRATION_DATASET = "neuralmagic/LLM_compression_calibration"
-logger = setup_logger("quantization")
+logger = setup_logger(log_name="quantization")
 
 
 def load_calibration_dataset(
