@@ -3,3 +3,5 @@ __pycache__
 .env
 spec_course/models/
 spec_course/.logs
+*/results/*
+*/sparse_logs/*
