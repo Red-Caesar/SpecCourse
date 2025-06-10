@@ -89,6 +89,24 @@ def install_k6():
         return False
 
 
+def install_lm_eval():
+    """Install lm-evaluation-harness from deps"""
+    try:
+        print("Installing lm-eval...")
+        lm_eval_dir = ROOT_DIR / "deps" / "lm-evaluation-harness"
+
+        if not lm_eval_dir.exists():
+            print(f"Error: Directory not found: {lm_eval_dir}")
+            return False
+
+        subprocess.run(["uv", "pip", "install", "-e", "."], cwd=lm_eval_dir, check=True)
+        print("lm-eval installed successfully")
+        return True
+    except Exception as e:
+        print(f"Error installing lm-eval: {e}")
+        return False
+
+
 class PostInstallCommand(Command):
     def initialize_options(self):
         pass
@@ -99,6 +117,7 @@ class PostInstallCommand(Command):
     def run(self):
         install_nvm_and_node()
         install_k6()
+        install_lm_eval()
 
 
 setup(
@@ -107,5 +126,5 @@ setup(
     cmdclass={
         "install": PostInstallCommand,
     },
-    python_requires=">=3.11",
+    python_requires=">=3.12",
 )

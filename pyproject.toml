@@ -8,7 +8,7 @@ authors = [{name = "Barbara Suslova", email = "suslovavd2002@mail.ru"}]
 version = "0.1.0"
 dependencies = [
     "llmcompressor==0.5.1",
-    "vllm==0.8.4",
+    "vllm==0.9.0",
     "pyyaml",
     "requests",
     "pre-commit",
