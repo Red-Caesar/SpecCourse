@@ -1,5 +1,0 @@
-llmcompressor
-vllm==0.8.4
-pyyaml
-requests
-pre-commit
