@@ -10,6 +10,11 @@ database_tables:
       quantization_id: "INTEGER PRIMARY KEY AUTOINCREMENT"
       quantization_type: "STRING"
 
+  datasets:
+    columns:
+      dataset_id: "INTEGER PRIMARY KEY AUTOINCREMENT"
+      dataset_type: "STRING"
+
   sd_setups:
     columns:
       sd_setup_id: "INTEGER PRIMARY KEY AUTOINCREMENT"
@@ -17,11 +22,13 @@ database_tables:
       target_quantization_id: "INTEGER"
       draft_model_id: "INTEGER"
       draft_quantization_id: "INTEGER"
+      dataset_id: "INTEGER"
     dependent_columns:
       target_model_id: "models(model_id)"
       target_quantization_id: "quantizations(quantization_id)"
       draft_model_id: "models(model_id)"
       draft_quantization_id: "quantizations(quantization_id)"
+      dataset_id: "datasets(dataset_id)"
 
   accuracy:
     columns:
@@ -45,7 +52,13 @@ database_tables:
   sd_performances:
     columns:
       date: "DATETIME DEFAULT CURRENT_TIMESTAMP"
-      acceptance_rate: "FLOAT"
       sd_setup_id: "INTEGER"
+      mean_acceptance_length: "FLOAT"
+      time_taken: "FLOAT"
+      rate_at_1position: "FLOAT"
+      rate_at_2position: "FLOAT"
+      rate_at_3position: "FLOAT"
+      rate_at_4position: "FLOAT"
+      rate_at_5position: "FLOAT"
     dependent_columns:
       sd_setup_id: "sd_setups(sd_setup_id)"

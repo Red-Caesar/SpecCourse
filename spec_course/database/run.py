@@ -1,20 +1,27 @@
 import argparse
 import os
 from pathlib import Path
-from typing import Type
+from typing import Tuple, Type
 
 from spec_course.database.db import create_database
 from spec_course.database.etl.accuracy import Accuracy
 from spec_course.database.etl.base import ETLBase
+from spec_course.database.etl.sd_metrics import SDMetrics
 from spec_course.scripts.utils import setup_logger
 
 logger = setup_logger(log_name="etl_process")
 
 
-def get_etl_class(etl_name: str) -> Type[ETLBase]:
+def get_etl_class_and_file_pattern(etl_name: str) -> Tuple[Type[ETLBase], str]:
     """Map ETL class name to actual class"""
     etl_classes = {
         "accuracy": Accuracy,
+        "sd_metrics": SDMetrics,
+    }
+
+    etl_file_patterns = {
+        "accuracy": "*/results_*.json",
+        "sd_metrics": "sd_results_*.json",
     }
 
     if etl_name not in etl_classes:
@@ -22,15 +29,15 @@ def get_etl_class(etl_name: str) -> Type[ETLBase]:
             f"Unknown ETL class: {etl_name}. Available classes: {list(etl_classes.keys())}"
         )
 
-    return etl_classes[etl_name]
+    return etl_classes[etl_name], etl_file_patterns[etl_name]
 
 
-def process_files(etl_class: Type[ETLBase], data_dir: Path, db_name: str) -> None:
+def process_files(
+    etl_class: Type[ETLBase], data_dir: Path, db_name: str, file_pattern: str
+) -> None:
     """Process all files in directory using specified ETL class"""
     etl = etl_class(db_name)
-    print(list(data_dir.glob("results_*.json")))
-    print(data_dir)
-    for file_path in data_dir.glob("*/results_*.json"):
+    for file_path in data_dir.glob(file_pattern):
         try:
             etl.run(file_path)
             logger.info(f"Successfully processed: {file_path}")
@@ -44,8 +51,8 @@ def main():
         "--etl_class",
         type=str,
         required=True,
-        choices=["accuracy"],
-        help="ETL class to use (e.g., accuracy)",
+        choices=["accuracy", "sd_metrics"],
+        help="ETL class to use (e.g., accuracy, sd_metrics)",
     )
     parser.add_argument(
         "--data_dir",
@@ -68,8 +75,8 @@ def main():
         create_database(args.db_name)
 
     try:
-        etl_class = get_etl_class(args.etl_class)
-        process_files(etl_class, data_dir, args.db_name)
+        etl_class, file_pattern = get_etl_class_and_file_pattern(args.etl_class)
+        process_files(etl_class, data_dir, args.db_name, file_pattern)
     except ValueError as e:
         logger.error(e)
 

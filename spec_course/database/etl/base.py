@@ -1,5 +1,18 @@
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
+
+
+def parse_model_name(full_name: str) -> Tuple[str, str]:
+    """Parse the model name and quantization type from a full model name."""
+    model_name = full_name.split("/")[-1]
+
+    if "scheme" in model_name:
+        quantization_type = model_name.split("scheme")[-1].replace("-", "")
+        model_name = model_name.split("scheme")[0][:-1]
+    else:
+        quantization_type = "FP16"
+
+    return model_name, quantization_type
 
 
 class ETLBase:

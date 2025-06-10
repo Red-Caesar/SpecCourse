@@ -9,7 +9,7 @@ from spec_course.database.db import (
     insert_model,
     insert_quantization,
 )
-from spec_course.database.etl.base import ETLBase
+from spec_course.database.etl.base import ETLBase, parse_model_name
 
 
 class Accuracy(ETLBase):
@@ -28,13 +28,7 @@ class Accuracy(ETLBase):
 
         results = data["results"]["gsm8k"]
         full_model_name = data["configs"]["gsm8k"]["metadata"]["pretrained"]
-        model_name = full_model_name.split("/")[-1]
-
-        if "scheme" in model_name:
-            quantization_type = model_name.split("scheme")[-1].replace("-", "")
-            model_name = model_name.split("scheme")[0][:-1]
-        else:
-            quantization_type = "FP16"
+        model_name, quantization_type = parse_model_name(full_model_name)
 
         timestamp = data["date"]
         date = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(timestamp))
