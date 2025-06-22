@@ -1,4 +1,5 @@
 import argparse
+import json
 import subprocess
 import time
 import traceback
@@ -65,8 +66,17 @@ def create_vllm_command(setup: Dict[str, str]) -> List[str]:
     server_args = setup.get("server_args", {})
     env_args = setup.get("env_args", {})
     env_args = " ".join([f"{k}={v}" for k, v in env_args.items()])
-    args_str = " ".join([f"--{k} {v}" for k, v in server_args.items() if k != "model"])
+    args_str = " ".join(
+        [
+            f"--{k} {v}"
+            for k, v in server_args.items()
+            if k not in ["model", "speculative_config"]
+        ]
+    )
     model_name = server_args["model"]
+    if "speculative_config" in server_args:
+        spec_config = json.dumps(server_args["speculative_config"])
+        args_str += f" --speculative_config '{spec_config}'"
     commands = [
         "source ../.venv/bin/activate",
         f"{env_args} vllm serve {model_name} {args_str}",
@@ -168,6 +178,7 @@ def run_evaluation(setup: Dict[str, str]) -> None:
             f"Load test completed for RPS {rps_value} and setup {current_setup}"
         )
         logger.info("-" * 80)
+    server.kill_session(current_setup)
 
 
 def main():

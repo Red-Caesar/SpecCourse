@@ -44,7 +44,8 @@ database_tables:
     columns:
       date: "DATETIME DEFAULT CURRENT_TIMESTAMP"
       rps: "INTEGER"
-      end_to_end_latencty: "FLOAT"
+      end_to_end_latency: "FLOAT"
+      num_spec_tokens: "INTEGER"
       sd_setup_id: "INTEGER"
     dependent_columns:
       sd_setup_id: "sd_setups(sd_setup_id)"

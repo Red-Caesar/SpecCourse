@@ -130,14 +130,19 @@ def insert_accuracy(
 
 
 def insert_load_test_performance(
-    db_name: str, sd_setup_id: int, rps: int, latency: float, date: str
+    db_name: str,
+    sd_setup_id: int,
+    rps: int,
+    latency: float,
+    num_spec_tokens: int,
+    date: str,
 ) -> None:
     """Insert a row into ld_performances table"""
     conn = sqlite3.connect(db_name)
     try:
         conn.execute(
-            "INSERT INTO ld_performances (sd_setup_id, rps, end_to_end_latencty, date) VALUES (?, ?, ?, ?)",
-            (sd_setup_id, rps, latency, date),
+            "INSERT INTO ld_performances (sd_setup_id, rps, end_to_end_latency, num_spec_tokens, date) VALUES (?, ?, ?, ?, ?)",
+            (sd_setup_id, rps, latency, num_spec_tokens, date),
         )
         conn.commit()
     finally:

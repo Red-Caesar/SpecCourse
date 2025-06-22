@@ -6,6 +6,7 @@ from typing import Tuple, Type
 from spec_course.database.db import create_database
 from spec_course.database.etl.accuracy import Accuracy
 from spec_course.database.etl.base import ETLBase
+from spec_course.database.etl.load_test_metrics import LoadTestETL
 from spec_course.database.etl.sd_metrics import SDMetrics
 from spec_course.scripts.utils import setup_logger
 
@@ -17,11 +18,13 @@ def get_etl_class_and_file_pattern(etl_name: str) -> Tuple[Type[ETLBase], str]:
     etl_classes = {
         "accuracy": Accuracy,
         "sd_metrics": SDMetrics,
+        "load_test_metrics": LoadTestETL,
     }
 
     etl_file_patterns = {
         "accuracy": "*/results_*.json",
         "sd_metrics": "sd_results_*.json",
+        "load_test_metrics": "*",
     }
 
     if etl_name not in etl_classes:
@@ -38,11 +41,18 @@ def process_files(
     """Process all files in directory using specified ETL class"""
     etl = etl_class(db_name)
     for file_path in data_dir.glob(file_pattern):
-        try:
-            etl.run(file_path)
-            logger.info(f"Successfully processed: {file_path}")
-        except Exception as e:
-            logger.error(f"Error processing {file_path}: {str(e)}")
+        if file_path.is_file():
+            try:
+                etl.run(file_path)
+                logger.info(f"Successfully processed: {file_path}")
+            except Exception as e:
+                logger.error(f"Error processing {file_path}: {str(e)}")
+        elif file_path.is_dir() and etl_class.__name__ == "LoadTestETL":
+            try:
+                etl.run(file_path)
+                logger.info(f"Successfully processed: {file_path}")
+            except Exception as e:
+                logger.error(f"Error processing {file_path}: {str(e)}")
 
 
 def main():
@@ -51,8 +61,8 @@ def main():
         "--etl_class",
         type=str,
         required=True,
-        choices=["accuracy", "sd_metrics"],
-        help="ETL class to use (e.g., accuracy, sd_metrics)",
+        choices=["accuracy", "sd_metrics", "load_test_metrics"],
+        help="ETL class to use (e.g., accuracy, sd_metrics, load_test_metrics)",
     )
     parser.add_argument(
         "--data_dir",
