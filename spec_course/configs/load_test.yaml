@@ -1,0 +1,98 @@
+setups: [
+  {
+    "load_test": {
+      "rps": "1:10",
+      "duration": "60s",
+      "prompt-type": "code",
+      "run-id": "single_model",
+    },
+    "vllm": {
+      "server_args": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+      },
+      "env": {
+        "VLLM_USE_V1": "0",
+      }
+    }
+  },
+  {
+    "load_test": {
+      "rps": "1:10",
+      "duration": "60s",
+      "prompt-type": "code",
+      "run-id": "sd",
+    },
+    "vllm": {
+      "server_args": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "speculative_config": {
+          "model": "models/Llama-3.1-8B-Instruct-FP8",
+          "num_speculative_tokens": 1,
+        },
+      },
+      "env": {
+        "VLLM_USE_V1": "0",
+      }
+    }
+  },
+  {
+    "load_test": {
+      "rps": "1:10",
+      "duration": "60s",
+      "prompt-type": "code",
+      "run-id": "sd",
+    },
+    "vllm": {
+      "server_args": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "speculative_config": {
+          "model": "models/Llama-3.1-8B-Instruct-FP8",
+          "num_speculative_tokens": 2,
+        },
+      },
+      "env": {
+        "VLLM_USE_V1": "0",
+      }
+    }
+  },
+  {
+    "load_test": {
+      "rps": "1:10",
+      "duration": "60s",
+      "prompt-type": "code",
+      "run-id": "sd",
+    },
+    "vllm": {
+      "server_args": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "speculative_config": {
+          "model": "models/Llama-3.1-8B-Instruct-FP8",
+          "num_speculative_tokens": 3,
+        },
+      },
+      "env": {
+        "VLLM_USE_V1": "0",
+      }
+    }
+  },
+  {
+    "load_test": {
+      "rps": "1:10",
+      "duration": "60s",
+      "prompt-type": "code",
+      "run-id": "sd",
+    },
+    "vllm": {
+      "server_args": {
+        "model": "meta-llama/Llama-3.1-8B-Instruct",
+        "speculative_config": {
+          "model": "models/Llama-3.1-8B-Instruct-FP8",
+          "num_speculative_tokens": 4,
+        },
+      },
+      "env": {
+        "VLLM_USE_V1": "0",
+      }
+    }
+  },
+]
