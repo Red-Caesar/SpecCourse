@@ -54,7 +54,13 @@ python scripts/run_sd.py \
   --output_dir results/sd_experiments
 ```
 
-### 4. Data Analysis
+### 4. Experiments with different RPS
+Configure target and draft model setups in `configs/load_test.yaml`, then run:
+```bash
+python scripts/run_load_test.py --config configs/load_test.yaml
+```
+
+### 5. Data Analysis
 
 Results are stored in the `results` directory. To analyze metrics using the database:
 
@@ -73,6 +79,16 @@ python database/run.py \
   --data_dir results/sd_experiments/ \
   --db_name database.db
 ```
+
+3. Import load test metrics:
+```bash
+python database/run.py \
+  --etl_class load_test_metrics \
+  --data_dir results/load_test \
+  --db_name database.db
+```
+
+4. To view the analysis results, go to `notebook.ipynb`.
 
 ## Project Structure
 
