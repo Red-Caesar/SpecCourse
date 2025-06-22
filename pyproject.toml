@@ -14,6 +14,7 @@ dependencies = [
     "pre-commit",
     "ipykernel",
     "seaborn",
+    "libtmux",
 ]
 description = "Experiments with speculative decoding"
 requires-python = ">=3.11"
